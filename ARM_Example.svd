@@ -874,6 +874,11 @@
             </field>
           </fields>
         </register>
+        <register>
+          <dim>4</dim>
+          <dimIncrement>4</dimIncrement>
+          <name>DIMNOINDEX%s</name>
+        </register>
       </registers>
     </peripheral>
 

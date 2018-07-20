@@ -212,7 +212,10 @@ class SVDElement(object):
         if hasattr(self.parent.element, 'appendToName'):
             value_str += self.parent.appendToName
         if self.index != None:
-            index = self.dimIndex[self.index]
+            if self.dimIndex:
+                index = self.dimIndex[self.index]
+            else:
+                index = self.index
             value_str = value_str.replace('%s', str(index))
         return value_str
 
@@ -242,7 +245,9 @@ class SVDElement(object):
                 if attr_type == 'scaledNonNegativeInteger':
                     return self.get_scaled_non_negative_integer(attr, element)
                 if attr_type == 'dimIndexType':
-                    return get_dim_index_type(attr, element)
+                    indexes = get_dim_index_type(attr, element)
+                    if indexes is None:
+                        indexes = range(0, self.dim)
                 if attr_type == 'dimableIdentifierType' or \
                     attr_type == 'registerNameType':
                     return self.get_register_name_type(attr, element)
@@ -316,6 +321,8 @@ class SVDElement(object):
         """
         if self.dim:
             indexes = self.dimIndex
+            if indexes is None:
+                indexes = range(0, self.dim)
             for index in range(0, len(indexes)):
                 element = svd_class(self.element, self.parent)
                 element.index = index
