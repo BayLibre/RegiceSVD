@@ -559,6 +559,14 @@ class SVD(SVDElement):
     def __init__(self, fname):
         svd_file = lxml.objectify.parse(os.path.expanduser(fname))
         super(SVD, self).__init__(svd_file.getroot(), None)
+        self.merge_attrs({
+            'xs:string': [
+                'vendor', 'vendorID', 'name', 'series', 'version',
+                'description', 'licenseText', 'cpu',
+            ],
+            'scaledNonNegativeInteger': ['addressUnitBits', 'width'],
+        })
+        self.merge_attrs(self.register_attrs)
         self.peripherals = OrderedDict()
 
     def parse(self):
