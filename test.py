@@ -210,5 +210,27 @@ class TestSVD(unittest.TestCase):
         self.assertEqual(values[0].name, 'Disable')
         self.assertEqual(values[1].name, 'Enable')
 
+    def test_SVDBrokenField(self):
+        peripheral = self.svd.peripherals['TEST1']
+        registers = peripheral.registers
+        register = registers['TEST1_BROKEN_FIELDS']
+        fields = register.fields
+
+        self.assertIn('A0', fields)
+        self.assertIn('A1', fields)
+        self.assertIn('A2', fields)
+        self.assertIn('A', fields)
+
+        self.assertIn('B0', fields)
+        self.assertIn('B1', fields)
+        self.assertIn('B2', fields)
+        self.assertNotIn('B', fields)
+
+        self.assertIn('C0', fields)
+        self.assertIn('C1', fields)
+        self.assertNotIn('C', fields)
+
+        self.assertIn('RTCSEL', fields)
+
 if __name__ == '__main__':
     unittest.main()

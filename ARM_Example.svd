@@ -879,6 +879,61 @@
           <dimIncrement>4</dimIncrement>
           <name>DIMNOINDEX%s</name>
         </register>
+        <register>
+          <name>BROKEN_FIELDS</name>
+          <description>A register with broken field, e.g A1, A2, A3 which are supposed to only one field, name A</description>
+          <addressOffset>0x100</addressOffset>
+          <fields>
+            <field>
+              <name>A0</name>
+              <bitOffset>0</bitOffset>
+            </field>
+            <field>
+              <name>A1</name>
+              <bitOffset>1</bitOffset>
+            </field>
+            <field>
+              <name>A2</name>
+              <bitOffset>2</bitOffset>
+            </field>
+            <field>
+              <name>B0</name>
+              <bitOffset>10</bitOffset>
+            </field>
+            <field>
+              <name>B1</name>
+              <bitOffset>13</bitOffset>
+            </field>
+            <field>
+              <name>B2</name>
+              <bitOffset>15</bitOffset>
+            </field>
+            <field>
+              <name>C0</name>
+              <bitOffset>16</bitOffset>
+              <bitWidth>2</bitWidth>
+            </field>
+            <field>
+              <name>C1</name>
+              <bitOffset>18</bitOffset>
+              <bitWidth>2</bitWidth>
+            </field>
+            <field>
+              <name>RTCSEL0</name>
+              <description>RTC clock source selection</description>
+              <bitOffset>8</bitOffset>
+              <bitWidth>1</bitWidth>
+              <access>read-write</access>
+            </field>
+            <field>
+              <name>RTCSEL1</name>
+              <description>RTC clock source selection</description>
+              <bitOffset>9</bitOffset>
+              <bitWidth>1</bitWidth>
+              <access>read-write</access>
+            </field>
+          </fields>
+        </register>
       </registers>
     </peripheral>
 

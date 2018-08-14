@@ -56,6 +56,7 @@
 """
 
 import os
+import re
 from collections import OrderedDict
 
 import lxml.objectify
@@ -579,3 +580,66 @@ class SVD(SVDElement):
         """
         self.do_parse(SVDPeripheralElement, SVDPeripheral,
                       "peripherals", self.element)
+        self.fixup()
+
+    def fixup_bits_to_field(self, register, name):
+        """
+            Fix up broken fields
+
+            Sometime, in SVD, a field with a width greater than one is defined
+            using more than one field.
+            By example, instead of defining a field 'A', with a width of 2 bits,
+            this defines 'A0' and 'A1'.
+        """
+        res = re.search(r'(?P<name>.*)\d+', name)
+        if not res:
+            return
+        fields = {}
+        base_name = res.group('name')
+        if not hasattr(register, 'fixed_fields'):
+            setattr(register, 'fixed_fields', {})
+        if not base_name in register.fixed_fields:
+            offset = 32
+            bitwidth = 0
+            for field_name in register.fields:
+                field = register.fields[field_name]
+                if re.match(base_name + r'\d+', field_name):
+                    if field.bitWidth > 1:
+                        return
+                    bitwidth += 1
+                    offset = min(field.bitOffset, offset)
+                    fields[field.bitOffset] = field
+
+            contigous = True
+            for bitoffset in fields:
+                if not contigous:
+                    return
+                if bitoffset + 1 in fields:
+                    continue
+                else:
+                    contigous = False
+                    continue
+
+            obj = SVDField(field, register)
+            setattr(obj, 'name', base_name)
+            setattr(obj, 'bitWidth', bitwidth)
+            setattr(obj, 'bitOffset', offset)
+            register.fixed_fields[base_name] = obj
+
+    def fixup(self):
+        """
+            Fix up SVD quirks
+
+            There are some quirks present in SVD files.
+            This tries to handle them, in order to get the same behavior for
+            every SVD files.
+        """
+        for peripheral_name in self.peripherals:
+            peripheral = self.peripherals[peripheral_name]
+            for register_name in peripheral.registers:
+                register = peripheral.registers[register_name]
+                for field_name in register.fields:
+                    self.fixup_bits_to_field(register, field_name)
+                if hasattr(register, 'fixed_fields'):
+                    for field in register.fixed_fields:
+                        register.fields[field] = register.fixed_fields[field]
