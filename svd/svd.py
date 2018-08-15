@@ -547,7 +547,7 @@ class SVDPeripheral(SVDPeripheralElement):
                           "registers", self.derived_element)
         self.do_parse(SVDRegisterElement, SVDRegister, "registers", self.element)
 
-class SVD(SVDElement):
+class SVDDevice(SVDElement):
     """
         A class to open and parse a SVD file
 
@@ -557,9 +557,8 @@ class SVD(SVDElement):
 
         This class represents the root elements, e.g an array of peripherals.
     """
-    def __init__(self, fname):
-        svd_file = lxml.objectify.parse(os.path.expanduser(fname))
-        super(SVD, self).__init__(svd_file.getroot(), None)
+    def __init__(self, element):
+        super(SVDDevice, self).__init__(element, None)
         self.merge_attrs({
             'xs:string': [
                 'vendor', 'vendorID', 'name', 'series', 'version',
@@ -643,3 +642,24 @@ class SVD(SVDElement):
                 if hasattr(register, 'fixed_fields'):
                     for field in register.fixed_fields:
                         register.fields[field] = register.fixed_fields[field]
+
+class SVD(SVDDevice):
+    """
+        A class derived from SVDDevice
+
+        This opens a given file path and use it to load SVD file.
+    """
+    def __init__(self, fname):
+        svd_file = lxml.objectify.parse(os.path.expanduser(fname))
+        print(type(svd_file.getroot()))
+        super(SVD, self).__init__(svd_file.getroot())
+
+class SVDText(SVDDevice):
+    """
+        A class derived from SVDDevice
+
+        This uses an already opened file to load SVD file.
+    """
+    def __init__(self, text):
+        svd_root = lxml.objectify.fromstring(text)
+        super(SVDText, self).__init__(svd_root)

@@ -25,7 +25,7 @@
 
 import unittest
 
-from svd import SVD
+from svd import SVD, SVDText
 
 class TestSVD(unittest.TestCase):
     @classmethod
@@ -49,6 +49,15 @@ class TestSVD(unittest.TestCase):
         self.assertEqual(len(self.svd.peripherals), 5)
         # Check that TIMER0, one of the peripherals is in the list
         self.assertIn('TIMER0', self.svd.peripherals)
+
+    def test_SVDText(self):
+        file = open('ARM_Example.svd')
+        svd = SVDText(file.read().encode())
+        svd.parse()
+        # This checks if there are the expected numbers of peripherals
+        self.assertEqual(len(svd.peripherals), 5)
+        # Check that TIMER0, one of the peripherals is in the list
+        self.assertIn('TIMER0', svd.peripherals)
 
     def test_SVDPeripheral(self):
         peripheral = self.svd.peripherals['TIMER0']

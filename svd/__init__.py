@@ -27,6 +27,6 @@
     This module provides a class to parse and use CMSIS SVD file.
 """
 
-from svd.svd import SVD
+from svd.svd import SVD, SVDText
 
-__all__ = ['SVD', '__version__']
+__all__ = ['SVD', 'SVDText', '__version__']
