@@ -593,7 +593,7 @@ class SVDDevice(SVDElement):
         res = re.search(r'(?P<name>.*)\d+', name)
         if not res:
             return
-        fields = {}
+        fields = OrderedDict()
         base_name = res.group('name')
         if not hasattr(register, 'fixed_fields'):
             setattr(register, 'fixed_fields', {})
@@ -614,6 +614,8 @@ class SVDDevice(SVDElement):
                 if not contigous:
                     return
                 if bitoffset + 1 in fields:
+                    continue
+                if bitoffset - 1 in fields:
                     continue
                 else:
                     contigous = False
