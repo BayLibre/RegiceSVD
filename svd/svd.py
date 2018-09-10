@@ -188,7 +188,7 @@ class SVDElement(object):
             :return: The content of the tag, converted to integer
         """
         value_str = str(get(attr, element))
-        if '0x' in  value_str:
+        if '0x' in  value_str or '0X' in value_str:
             value = int(value_str, 16)
         else:
             value = int(value_str)
